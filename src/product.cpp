@@ -125,9 +125,73 @@ void Product::re_stock(){
     cout<<"Batch Price: "<<stock_data[t_id].total_price<<'\n'<<"Buy price per unit: "<<stock_data[t_id].per_price<<'\n';
     cout<<"Sell price per unit: "<<stock_data[t_id].coustumer_price<<"Quantity: "<<stock_data[t_id].quntity<<'\n';
 }
-int main(){
-    master_db.add_product();
-    master_db.search();
-    master_db.re_stock();
-    master_db.display();
+void Product::filter(){
+    cout<<"=================================\n";
+    cout<<"\tFilter by Category\t\n";
+    cout<<"=================================\n";
+    cout<<"Enter Catagory name you want search: ";
+    getline(cin,t_catagory);
+    for(const auto& x:stock_data){
+        const auto& stock=x.second;
+        if(stock.catagory==t_catagory){
+            cout<<"ID: "<<stock.id<<" ";
+            cout<<"|Product Name: "<<stock.name<<" ";
+            cout<<"|Batch Price: "<<stock.total_price<<" ";
+            cout<<"|Single Price: "<<stock.per_price<<" ";
+            cout<<"|Quantity: "<<stock.quntity<<" ";
+            cout<<"|Category: "<<stock.catagory<<" ";
+            cout<<"|Coustmer Price: "<<stock.coustumer_price<<" \n";
+        }
+    } 
+}
+void Product::sell_Product(){
+    ofstream o;
+    while(true){
+        search();
+        cout<<"=======================================\n";
+        cout<<"You can exit any time by entering 0 \n";
+        cout<<"=======================================\n";
+        cout<<"Quantity you want to buy: ";
+        cin>>quantity;
+        if(quantity<=0){
+            break;
+        }
+        stock_data[t_id].quntity -= quantity;
+        amount=stock_data[t_id].coustumer_price*quantity;
+        cout<<amount<<"$";
+        float pamount=stock_data[t_id].per_price*quantity;
+        float profit=amount-pamount;
+        sell.emplace_back(amount);
+        sprofit.emplace_back(profit);
+        o.open("/home/muhammadmuhtasham/Inventory_managment_system/record/recipt.txt");
+        o<<"Sell amountfrom "<<t_id<<" is "<<amount<<"$\n";
+        o.close();
+        o.open("/home/muhammadmuhtasham/Inventory_managment_system/record/profit.txt");
+        o<<"Total Profit from "<<t_id<<" is "<<profit<<"$\n";
+    }
+    float total_amount=std::accumulate(sell.begin(),sell.end(),0.0f);
+    float total_profit=std::accumulate(sprofit.begin(),sprofit.end(),0.0f);
+    o.open("/home/muhammadmuhtasham/Inventory_managment_system/record/recipt.txt");
+    o<<"Total amount is "<<total_amount<<"$\n";
+    o.close();
+    o.open("/home/muhammadmuhtasham/Inventory_managment_system/record/profit.txt");
+    o<<"Total Profit is "<<total_profit<<"$\n";
+    o.close();
+}
+void Product::sort(){
+    std::vector<productDetails>product;
+    for(auto& x:stock_data){
+        product.emplace_back(x.second);
+    }
+    std::sort(product.begin(),product.end(),[](const auto& a,const auto& b){
+        return a.coustumer_price<b.coustumer_price;
+    });
+    for(const auto& stock : product){
+        cout << "ID: " << stock.id << " "
+             << "|Product Name: " << stock.name << " "
+             << "|Single Price: " << stock.per_price << " "
+             << "|Quantity: " << stock.quntity << " "
+             << "|Category: " << stock.catagory << " "
+             << "|Customer Price: " << stock.coustumer_price << " \n";
+    }
 }
