@@ -9,5 +9,4 @@ The main focus of this project was designing a scalable OOP structure while avoi
 - Add, update, search, and delete products
 - Process sales and restock inventory with quantity checks
 - Low-stock detection warnings
-- Persistent state saving and loading using CSV files
 - Input validation to handle non-numeric inputs without infinite loop crashes
