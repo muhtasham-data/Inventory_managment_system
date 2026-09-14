@@ -24,7 +24,7 @@ class Product{
     void re_stock();//done
     void low_stock_warning();//done
     void sell_Product();//done
-    void sort();
+    void sort();//done
     void filter();//done
 };
 extern Product master_db;
